@@ -1,7 +1,21 @@
-# `.agents` — Bộ khung workflow và memory cho AI coding agent
+# `dotagents` — Bộ khung workflow và memory cho AI coding agent
 
 Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, kiểm chứng, cập nhật và quản lý bằng version control**, thay vì ghi lại mọi thứ một cách tự động.
 
+> ### ⚡ Cài đặt nhanh trong 1 lệnh Prompt (One-Prompt Setup)
+>
+> Copy toàn bộ đoạn prompt bên dưới gửi cho AI coding agent của bạn (Claude Code, Cursor, Windsurf, Roo-Code, Omp, Codex...) trong bất kỳ repository nào để agent **tự động cài đặt và kích hoạt toàn bộ framework**:
+>
+> ```markdown
+> Hãy tích hợp bộ khung `dotagents` vào repository hiện tại theo các bước sau:
+> 1. Clone tạm dotagents: `git clone --depth 1 https://github.com/truongnat/dotagents.git /tmp/dotagents`
+> 2. Khởi tạo cấu trúc vào repo hiện tại: `/tmp/dotagents/.agents/scripts/init-project.sh .`
+> 3. Cấp quyền thực thi script: `chmod +x .agents/scripts/*.sh .agents/scripts/*.py`
+> 4. Chạy kiểm tra tính toàn vẹn: `./.agents/scripts/doctor.sh`
+> 5. Dọn dẹp thư mục tạm: `rm -rf /tmp/dotagents`
+> 6. Mở file `.agents/rules/project.md` và dựa vào codebase hiện tại (package.json, Cargo.toml, README, v.v.) tự động điền các mục: stack kỹ thuật, lệnh chạy test, build, lint và các quy ước chính.
+> 7. Báo cáo kết quả kiểm tra từ `doctor.sh` và tóm tắt những file đã được tích hợp.
+> ```
 ## 1. Nguyên tắc thiết kế
 
 1. **Một nguồn chuẩn:** quản lý rule, skill, MCP, tool, script, template và memory trong `.agents/`.
