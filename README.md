@@ -6,7 +6,7 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 >
 > Copy toàn bộ đoạn prompt bên dưới gửi cho AI coding agent của bạn (Claude Code, Cursor, Windsurf, Roo-Code, Omp, Codex...) trong bất kỳ repository nào để agent **tự động cài đặt framework và cấu hình quy tắc dự án**:
 >
-> ```markdown
+> ````markdown
 > Hãy tích hợp bộ khung `dotagents` vào repository hiện tại:
 >
 > 1. Chạy đoạn bash sau để tải và cài đặt an toàn:
@@ -22,7 +22,7 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 > ```
 > 2. Mở file `.agents/rules/project.md` và dựa vào codebase hiện tại (package.json, Cargo.toml, go.mod, README, v.v.) tự động điền các mục: stack kỹ thuật, lệnh test/build/lint và các quy ước nghiệp vụ chính.
 > 3. Chạy lại `./.agents/scripts/doctor.sh` và tóm tắt những file đã được tích hợp.
-> ```
+> ````
 ## 1. Nguyên tắc thiết kế
 1. **Một nguồn chuẩn:** quản lý rule, skill, MCP, tool, script, template và memory trong `.agents/`.
 2. **Tìm trước khi làm:** với task kỹ thuật đáng kể, tìm memory project trước rồi global; đọc entry phù hợp và xác minh còn đúng với code/dependency hiện tại.
