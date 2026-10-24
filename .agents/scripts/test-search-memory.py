@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused tests for search-memory.py metadata parsing, comment stripping, and PROJECT_ROOT."""
+"""Focused tests for search-memory.py metadata parsing, comment stripping, ranking, and PROJECT_ROOT."""
 
 from __future__ import annotations
 
@@ -73,6 +73,34 @@ WAL mode resolves busy locking.
         res_neg = subprocess.run(cmd_neg, env=env, capture_output=True, text=True)
         assert res_neg.returncode == 0
         assert "Không có kết quả phù hợp" in res_neg.stdout
+
+        # 3. Add superseded entry outside archive/
+        sup_file = mem_dir / "2026-10-24-bugfix-old-lock.md"
+        sup_file.write_text(
+            """---
+schema_version: 1
+id: "MEM-20261024-old-lock"
+title: "Old lock workaround"
+type: bugfix
+status: superseded
+confidence: low
+---
+
+# Summary
+locking obsolete workaround
+""",
+            encoding="utf-8",
+        )
+
+        # Without --archive and without explicit --status, superseded must be excluded by default
+        cmd_default = ["python3", str(SCRIPT_PATH), "workaround"]
+        res_default = subprocess.run(cmd_default, env=env, capture_output=True, text=True)
+        assert "Không có kết quả phù hợp" in res_default.stdout
+
+        # With --archive, superseded entry is included
+        cmd_arch = ["python3", str(SCRIPT_PATH), "workaround", "--archive"]
+        res_arch = subprocess.run(cmd_arch, env=env, capture_output=True, text=True)
+        assert "Old lock workaround" in res_arch.stdout or "workaround" in res_arch.stdout
 
 
 def main() -> int:

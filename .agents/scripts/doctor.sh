@@ -58,9 +58,8 @@ fi
 
 # 5. Chạy unit tests
 echo
-echo "[Bonus] Chạy bộ unit tests:"
-if python3 "$SCRIPT_DIR/test-validate-memory.py"; then
-  echo "  ✓ Unit tests passing"
+if python3 "$SCRIPT_DIR/test-validate-memory.py" && python3 "$SCRIPT_DIR/test-search-memory.py"; then
+  echo "  ✓ Unit tests passing (validate-memory, search-memory)"
 else
   echo "  ✗ Unit tests failed"
   failures=$((failures + 1))

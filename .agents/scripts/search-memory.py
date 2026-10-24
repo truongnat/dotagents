@@ -166,20 +166,38 @@ def main() -> int:
             if not args.archive and "archive" in f.parts:
                 continue
 
-            # Apply metadata filter
+            fm = parse_frontmatter(f.read_text(encoding="utf-8", errors="replace"))
+
+            # Default active policy: if --archive is not passed and no explicit --status is given,
+            # exclude superseded and archived entries even if placed outside the archive/ directory
+            if not args.archive and not args.status:
+                entry_status = fm.get("status", "active")
+                if entry_status in ("archived", "superseded"):
+                    continue
+
+            # Apply explicit metadata filter
             if any([args.type, args.status, args.confidence, args.tag]):
-                fm = parse_frontmatter(f.read_text(encoding="utf-8", errors="replace"))
                 if not matches_filter(fm, args.type, args.status, args.confidence, args.tag):
                     continue
-            candidate_files.append(f)
+            candidate_files.append((f, fm))
 
         if not candidate_files:
             continue
 
+        # Rank candidates: active > needs-review > others; high > medium > low
+        status_rank = {"active": 0, "needs-review": 1, "superseded": 2, "archived": 3}
+        conf_rank = {"high": 0, "medium": 1, "low": 2}
+        candidate_files.sort(
+            key=lambda item: (
+                status_rank.get(item[1].get("status", ""), 9),
+                conf_rank.get(item[1].get("confidence", ""), 9),
+                item[0].name,
+            )
+        )
+        ranked_files = [f for f, _ in candidate_files]
         if args.summary:
             print(f"--- Phạm vi: {scope_name} ({dir_path}) ---")
-            for f in candidate_files:
-                fm = parse_frontmatter(f.read_text(encoding="utf-8", errors="replace"))
+            for f, fm in candidate_files:
                 title = fm.get("title", "(không có tiêu đề)")
                 st = fm.get("status", "unknown")
                 typ = fm.get("type", "unknown")
@@ -192,7 +210,7 @@ def main() -> int:
         if not args.query:
             # Metadata filter only without search query: list files
             print(f"--- Phạm vi: {scope_name} ({dir_path}) ---")
-            for f in candidate_files:
+            for f in ranked_files:
                 print(f"  {f}")
                 total_matches += 1
             print()
@@ -201,9 +219,9 @@ def main() -> int:
         # Content text search
         matched = False
         if rg_path:
-            matched = run_rg(rg_path, args.query, candidate_files)
+            matched = run_rg(rg_path, args.query, ranked_files)
         else:
-            matched = run_python_fallback_search(args.query, candidate_files)
+            matched = run_python_fallback_search(args.query, ranked_files)
 
         if matched:
             total_matches += 1
