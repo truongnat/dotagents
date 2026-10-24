@@ -4,20 +4,24 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 
 > ### ⚡ Cài đặt nhanh trong 1 lệnh Prompt (One-Prompt Setup)
 >
-> Copy toàn bộ đoạn prompt bên dưới gửi cho AI coding agent của bạn (Claude Code, Cursor, Windsurf, Roo-Code, Omp, Codex...) trong bất kỳ repository nào để agent **tự động cài đặt và kích hoạt toàn bộ framework**:
+> Copy toàn bộ đoạn prompt bên dưới gửi cho AI coding agent của bạn (Claude Code, Cursor, Windsurf, Roo-Code, Omp, Codex...) trong bất kỳ repository nào để agent **tự động cài đặt framework và cấu hình quy tắc dự án**:
 >
 > ```markdown
-> Hãy tích hợp bộ khung `dotagents` vào repository hiện tại theo các bước sau:
-> 1. Clone tạm dotagents: `git clone --depth 1 https://github.com/truongnat/dotagents.git /tmp/dotagents`
-> 2. Khởi tạo cấu trúc vào repo hiện tại: `/tmp/dotagents/.agents/scripts/init-project.sh .`
-> 3. Cấp quyền thực thi script: `chmod +x .agents/scripts/*.sh .agents/scripts/*.py`
-> 4. Chạy kiểm tra tính toàn vẹn: `./.agents/scripts/doctor.sh`
-> 5. Dọn dẹp thư mục tạm: `rm -rf /tmp/dotagents`
-> 6. Mở file `.agents/rules/project.md` và dựa vào codebase hiện tại (package.json, Cargo.toml, README, v.v.) tự động điền các mục: stack kỹ thuật, lệnh chạy test, build, lint và các quy ước chính.
+> Hãy tích hợp bộ khung `dotagents` vào repository hiện tại theo các bước an toàn sau:
+> 1. Tạo thư mục tạm an toàn và clone dotagents:
+>    TMP_DIR="$(mktemp -d)" && git clone --depth 1 https://github.com/truongnat/dotagents.git "$TMP_DIR"
+> 2. Khởi tạo cấu trúc vào repo hiện tại (không ghi đè file tùy biến có sẵn):
+>    "$TMP_DIR/.agents/scripts/init-project.sh" .
+> 3. Cấp quyền thực thi script:
+>    chmod +x .agents/scripts/*.sh .agents/scripts/*.py
+> 4. Dọn dẹp thư mục tạm:
+>    rm -rf "$TMP_DIR"
+> 5. Mở file `.agents/rules/project.md` và dựa vào codebase hiện tại (package.json, Cargo.toml, go.mod, README, v.v.) điền bối cảnh thực tế: stack kỹ thuật, lệnh test/build/lint và các quy ước nghiệp vụ chính.
+> 6. Chạy kiểm tra tính toàn vẹn hệ thống:
+>    ./.agents/scripts/doctor.sh
 > 7. Báo cáo kết quả kiểm tra từ `doctor.sh` và tóm tắt những file đã được tích hợp.
 > ```
 ## 1. Nguyên tắc thiết kế
-
 1. **Một nguồn chuẩn:** quản lý rule, skill, MCP, tool, script, template và memory trong `.agents/`.
 2. **Tìm trước khi làm:** với task kỹ thuật đáng kể, tìm memory project trước rồi global; đọc entry phù hợp và xác minh còn đúng với code/dependency hiện tại.
 3. **Chỉ lưu kiến thức có giá trị lâu dài:** ưu tiên root cause khó nhận biết, lỗi đã giải quyết, quyết định kiến trúc, workaround có điều kiện, lỗi có thể tái diễn hoặc quy trình đã kiểm chứng.
