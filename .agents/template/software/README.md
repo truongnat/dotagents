@@ -18,4 +18,8 @@ Chọn template theo mức độ rủi ro và giai đoạn công việc; không 
 | `retrospective.md` | `handoff-retrospective` | Rút bài học có action item cụ thể |
 | `memory-evaluation.md` | `memory-curation` | Đo hiệu quả truy xuất/sử dụng memory |
 
-Template trong `.agents/template/` là bản gốc. Khi cần lưu artifact cho task, sao chép vào vị trí theo convention của repository; không sửa template nguồn để phản ánh một task riêng.
+Template trong `.agents/template/` là bản gốc. Khi khởi tạo tài liệu cho task, tuân theo quy chuẩn lưu trữ tại `../../rules/deliverables-and-reporting.md`:
+- Tài liệu dự án dài hạn (ADR, feature-spec): lưu trong repo (`docs/adr/`, `docs/specs/`).
+- Báo cáo review, audit, bug investigation, handoff: mặc định lưu tại `~/.agents/outputs/<project-name>/reports/YYYY-MM-DD-<loại>-<chủ-đề>-<rev>.md`. Không tạo file rác ở root project.
+
+> **Phân định Chat và File:** Toàn bộ nội dung chi tiết theo template phải được xuất ra **file Markdown (`.md`)**. Không dán nguyên bản template vào chat; chat chỉ đưa kết luận ngắn gọn, blocker chính và đường dẫn file đã tạo.

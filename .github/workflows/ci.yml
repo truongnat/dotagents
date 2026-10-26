@@ -25,3 +25,4 @@ jobs:
           chmod +x .agents/scripts/*.sh .agents/scripts/*.py
           ./.agents/scripts/doctor.sh
           ./.agents/scripts/test-init-project.sh
+          ./.agents/scripts/test-init-global.sh

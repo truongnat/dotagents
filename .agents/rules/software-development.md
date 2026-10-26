@@ -59,3 +59,21 @@
 | Release/migration rủi ro cao | Kế hoạch + kế hoạch test + checklist release |
 | Incident production | Postmortem sau khi đã giảm thiểu/ổn định |
 | Kết thúc phiên khi task chưa xong | Bàn giao công việc |
+
+## Quy ước đầu ra: Chat ngắn gọn vs File Deliverable (Template)
+
+Phân định nghiêm ngặt giữa hai kênh đầu ra để tránh làm loãng ngữ cảnh hội thoại:
+
+1. **Kênh File Deliverable (bắt buộc khi dùng template):**
+   - Mọi báo cáo hoặc tài liệu dựa trên template (`feature-spec.md`, `technical-design.md`, `implementation-plan.md`, `test-plan.md`, `bug-investigation.md`, `code-review.md`, `security-review.md`, `release-checklist.md`, `adr.md`, `incident-postmortem.md`, `handoff.md`, `retrospective.md`) **bắt buộc phải được ghi thành file Markdown (`.md`)**.
+   - **Vị trí lưu trữ chuẩn theo `rules/deliverables-and-reporting.md`:**
+     - Tài liệu dài hạn của dự án: Lưu trong repo (`docs/adr/`, `docs/specs/`, `.agents/memory/entries/`).
+     - Báo cáo review, audit, điều tra bug, postmortem, handoff: Mặc định lưu ngoài worktree tại `~/.agents/outputs/<project-name>/reports/YYYY-MM-DD-<loại>-<chủ-đề>-<rev>.md` để tránh làm bẩn `git status` (trừ khi dự án quy định thư mục riêng trong `project.md`). Tuyệt đối không xả file rác ra root repository (`./report.md`, `./review.md`).
+   - File deliverable chứa toàn bộ nội dung chi tiết, các mục theo template, bảng biểu, mã finding định danh `F-xx`, đường dẫn file code + số dòng, bằng chứng lệnh chạy và log liên quan.
+2. **Kênh Chat (chỉ báo cáo tóm tắt):**
+   - Tin nhắn chat đóng vai trò thông báo tóm tắt (Executive Summary) cho người dùng.
+   - Nội dung chat chỉ gồm:
+     - Tóm tắt kết quả chính trong 3–5 gạch đầu dòng.
+     - Các blocker, rủi ro hoặc findings quan trọng nhất (nếu có).
+     - **Đường dẫn đầy đủ** đến file deliverable đã ghi để người dùng kiểm tra chi tiết.
+   - **Tuyệt đối không** copy/paste toàn bộ nội dung báo cáo hoặc in nguyên khung template dài vào cửa sổ chat.

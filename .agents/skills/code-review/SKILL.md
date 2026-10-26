@@ -23,6 +23,7 @@ description: "Review thay đổi code dựa trên diff và ngữ cảnh xung qua
 - Ưu tiên finding có thể hành động, không tập trung vào sở thích formatting khi đã có formatter.
 - Phân biệt bug chắc chắn với câu hỏi cần xác minh.
 - Không khẳng định review đầy đủ nếu chỉ xem một phần file hoặc không thể chạy test.
+- Báo cáo review theo template phải được xuất thành file Markdown (`.md`); chat chỉ tóm tắt ngắn gọn kết luận, số lượng findings, blocker chính và đường dẫn file.
 
 ## Điều kiện hoàn tất
 - Findings được phân loại rõ; blocker/high severity được xử lý hoặc được chấp nhận có chủ đích trước merge.

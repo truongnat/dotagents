@@ -1,3 +1,14 @@
 *.pyc
 __pycache__/
+**/__pycache__/
 .DS_Store
+
+# Unignore .agents framework inside dotagents repository
+!.agents/
+!.agents/**
+.agents/**/__pycache__/
+.agents/**/*.pyc
+
+# Local outputs and reports
+.agents/outputs/
+outputs/

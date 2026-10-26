@@ -67,3 +67,17 @@ Nếu không có script, dùng `rg -n -i "term" .agents/memory "$HOME/.agents/me
 
 - Tuân thủ `rules/language.md` cho mọi tài liệu và memory mới.
 - Dùng số lượng template tương xứng với độ phức tạp. Sửa lỗi nhỏ không cần tài liệu đặc tả và thiết kế đầy đủ; feature ảnh hưởng nhiều thành phần, migration rủi ro hoặc incident production nên dùng template phù hợp.
+
+## 6. Phân định đầu ra: Chat ngắn gọn vs File Deliverable (Template)
+
+Tuân thủ quy chuẩn chi tiết trong `rules/deliverables-and-reporting.md`:
+
+- **Lưu trữ chuẩn (không xả file rác vào repo):**
+  - Tài liệu dự án dài hạn (ADR, spec, memory): Lưu trong repo (`docs/adr/`, `docs/specs/`, `.agents/memory/entries/`).
+  - Báo cáo review, audit, test, bug investigation, handoff: Mặc định lưu ngoài worktree tại `~/.agents/outputs/<project-name>/reports/YYYY-MM-DD-<loại>-<chủ-đề>-<rev>.md` (hoặc thư mục riêng do repository quy định trong `rules/project.md`). Tuyệt đối không tạo file rải rác ở root project (`./report.md`, `./review.md`).
+- **Template bắt buộc phải ghi ra file:** Mọi nội dung chi tiết theo template bắt buộc phải ghi thành file Markdown (`.md`). Tuyệt đối không dùng khung template để in một bản báo cáo dài lòng thòng trực tiếp vào tin nhắn chat.
+- **Báo cáo trong Chat chỉ tóm tắt ngắn gọn (Executive Summary):**
+  1. Tóm tắt kết luận cốt lõi trong 3–5 bullet points (trạng thái `PASS / FAIL / BLOCKED`).
+  2. Điểm tin các blocker, rủi ro hoặc findings quan trọng nhất (kèm mã định danh `F-xx`).
+  3. Cung cấp **đường dẫn đầy đủ** đến file deliverable (`.md`) vừa ghi để người dùng tra cứu chi tiết.
+  4. Không copy/paste nguyên văn toàn bộ nội dung file deliverable hoặc log kiểm thử dài vào cửa sổ chat.

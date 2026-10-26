@@ -36,4 +36,5 @@ description: "Điều phối vòng đời phát triển phần mềm từ phân 
 - Không bắt buộc tạo tài liệu đặc tả cho sửa đổi nhỏ; tránh quy trình hình thức không tạo giá trị.
 
 ## Đầu ra
-Code/tài liệu cần thiết, bằng chứng kiểm chứng, tóm tắt diff và memory/handoff nếu phù hợp. Skill này điều phối; nó không thay thế các skill chuyên biệt.
+- **File deliverable (khi dùng template):** Toàn bộ nội dung chi tiết theo template (kế hoạch, đặc tả, review, audit, v.v.) phải được ghi thành file Markdown (`.md`) trong repo.
+- **Báo cáo trong Chat:** Chỉ tóm tắt ngắn gọn: kết quả thực hiện, bằng chứng kiểm chứng, blocker/finding chính và đường dẫn file deliverable; không dán toàn bộ nội dung template vào chat.

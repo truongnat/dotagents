@@ -4,7 +4,31 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 
 > ### ⚡ Cài đặt nhanh trong 1 lệnh Prompt (One-Prompt Setup)
 >
-> Copy toàn bộ đoạn prompt bên dưới gửi cho AI coding agent của bạn (Claude Code, Cursor, Windsurf, Roo-Code, Omp, Codex...) trong bất kỳ repository nào để agent **tự động cài đặt framework và cấu hình quy tắc dự án**:
+> Chọn prompt phù hợp với nhu cầu và gửi cho AI coding agent của bạn (Claude Code, Cursor, Windsurf, Roo-Code, Omp, Codex...):
+>
+> #### 🌐 Prompt 1: Cài đặt Toàn cục (Global Setup — chạy 1 lần duy nhất cho máy)
+> Thiết lập bộ khung `~/.agents/` làm nền tảng quy chuẩn, skills và global memory dùng chung cho mọi dự án:
+>
+> ````markdown
+> Hãy cài đặt bộ khung toàn cục `dotagents` vào máy:
+>
+> 1. Chạy đoạn bash sau để tải và cài đặt an toàn vào ~/.agents:
+> ```bash
+> bash -euo pipefail -c '
+>   TMP_DIR="$(mktemp -d)"
+>   trap "rm -rf \"$TMP_DIR\"" EXIT
+>   git clone --depth 1 https://github.com/truongnat/dotagents.git "$TMP_DIR"
+>   "$TMP_DIR/.agents/scripts/init-global.sh"
+>   chmod +x ~/.agents/scripts/*.sh ~/.agents/scripts/*.py
+>   ~/.agents/scripts/doctor.sh
+> '
+> ```
+> 2. Đảm bảo cấu hình agent của bạn đọc file `~/.agents/AGENTS.md` làm Global Instructions.
+> 3. Tóm tắt kết quả kiểm tra từ doctor.sh.
+> ````
+>
+> #### 📁 Prompt 2: Tích hợp vào Dự án (Project Setup — chạy trong từng repository)
+> Khởi tạo cấu trúc `.agents/` và `AGENTS.md` cục bộ, đồng thời tự động nhận diện stack kỹ thuật của dự án:
 >
 > ````markdown
 > Hãy tích hợp bộ khung `dotagents` vào repository hiện tại:
@@ -31,6 +55,7 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 5. **Bắt đầu bằng Markdown + Git:** dùng `rg`/`grep` trước. Chỉ thêm vector search, database hoặc memory service khi benchmark chứng minh cách tìm hiện tại không đủ.
 6. **Không lưu bí mật:** không đưa token, mật khẩu, private key, dữ liệu cá nhân hoặc log chứa thông tin nhạy cảm vào memory.
 7. **Ngôn ngữ nhất quán:** nội dung diễn giải mặc định bằng tiếng Việt; định danh kỹ thuật và metadata có cấu trúc giữ nguyên tiếng Anh. Quy tắc chi tiết nằm trong `.agents/rules/language.md`.
+8. **Phân định đầu ra rõ ràng:** Chat chỉ báo cáo tóm tắt ngắn gọn (Executive Summary); toàn bộ báo cáo chi tiết theo template phải xuất thành file Markdown (`.md`) lưu tại `~/.agents/outputs/<project>/reports/` theo quy chuẩn `rules/deliverables-and-reporting.md`, không xả file rác vào repository.
 
 ## 2. Cấu trúc
 
@@ -43,6 +68,12 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 ├── tools/
 ├── scripts/
 ├── template/
+├── outputs/                       # Lưu trữ báo cáo chuẩn ngoài worktree
+│   └── <project>/
+│       ├── reports/               # Báo cáo review, audit, điều tra lỗi, postmortem
+│       ├── artifacts/             # Ảnh screenshot, PDF, Excel test matrix
+│       ├── testresults/           # Log kiểm thử, benchmark, trace
+│       └── notes/                 # Ghi chép kỹ thuật tạm thời trong phiên
 └── memory/
     ├── INDEX.md
     ├── entries/{bugfixes,decisions,patterns,workflows,environment}/
@@ -69,15 +100,15 @@ Trong bộ mẫu này, các file cấu hình tùy chỉnh nằm dưới `.agents
 
 ### Global
 
-1. Sao chép thư mục `.agents/` trong gói này vào `~/.agents/`.
+1. Chạy script cài đặt toàn cục: `./.agents/scripts/init-global.sh` (mặc định cài đặt vào `~/.agents/`, an toàn không ghi đè file có sẵn trừ khi truyền `--force`).
 2. Cấu hình agent để đọc `~/.agents/AGENTS.md` theo cơ chế global instruction riêng của công cụ. **Không phải agent nào cũng tự động đọc `~/.agents/`**; `.agents/` là quy ước lưu trữ, không phải cơ chế tự nạp dùng chung cho mọi công cụ.
-3. Cấp quyền thực thi cho script: `chmod +x ~/.agents/scripts/search-memory.sh`.
+3. Chạy `~/.agents/scripts/doctor.sh` để kiểm tra sức khỏe hệ thống.
 
 ### Mỗi project
 
-1. Sao chép `.agents/` vào thư mục gốc repository.
-2. Sao chép `AGENTS.md` trong gói này vào thư mục gốc repository.
-3. Điền `.agents/rules/project.md`: stack, lệnh kiểm tra, kiến trúc và ràng buộc riêng.
+1. Chạy script khởi tạo: `./.agents/scripts/init-project.sh <thư-mục-repository>`.
+2. Điền `.agents/rules/project.md`: stack, lệnh kiểm tra, kiến trúc và ràng buộc riêng.
+3. Chạy `./.agents/scripts/doctor.sh` để kiểm tra.
 4. Chạy `git status` để xác nhận chỉ commit file phù hợp. Không đưa credential hoặc dữ liệu nhạy cảm vào repo.
 
 ### Tích hợp công cụ khác

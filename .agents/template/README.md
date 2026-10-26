@@ -4,3 +4,5 @@ Tập trung vào nội dung cần quyết định, thực hiện hoặc kiểm c
 
 - Memory: `memory/memory-entry.md`
 - Quy trình phát triển phần mềm: `software/README.md`
+
+> **Quy ước xuất bản:** Template dùng để khởi tạo **file Markdown (`.md`)** lưu trữ trong repository. Tuyệt đối không dùng khung template để in nội dung báo cáo chi tiết trực tiếp vào tin nhắn chat. Trong chat chỉ tóm tắt ngắn gọn kết luận và dẫn link file.

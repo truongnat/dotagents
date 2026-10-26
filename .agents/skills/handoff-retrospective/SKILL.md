@@ -29,6 +29,7 @@ description: "Bàn giao task chưa hoàn tất giữa phiên/agent/người làm
 - Không ghi “đã xong” nếu còn bước chưa xác minh.
 - Không giả định agent/phiên kế tiếp có thể truy cập hội thoại hiện tại; bàn giao đủ context cần thiết.
 - Không đưa secret vào handoff.
+- Khi dùng template handoff hoặc retrospective, xuất tài liệu thành file `.md`; chat chỉ tóm tắt ngắn gọn việc đã làm, việc tiếp theo và đường dẫn file bàn giao.
 
 ## Điều kiện hoàn tất
 - Người nhận biết chính xác trạng thái, việc tiếp theo và các rủi ro; retrospective có hành động theo dõi rõ ràng.

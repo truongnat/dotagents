@@ -5,6 +5,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 echo "Chạy integration test cho init-project.sh..."
+# Đảm bảo thư mục tạm hoạt động ổn định trên mọi môi trường
+if [[ -z "${TMPDIR:-}" ]]; then
+  if mkdir -p "$HOME/.cache/tmp" 2>/dev/null; then
+    export TMPDIR="$HOME/.cache/tmp"
+  fi
+fi
 
 TEMP_TARGET="$(mktemp -d)"
 SANDBOX="$(mktemp -d)"

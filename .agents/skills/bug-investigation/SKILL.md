@@ -27,6 +27,7 @@ description: "Điều tra lỗi theo bằng chứng, tái hiện, lập giả th
 - Phân biệt sự kiện quan sát được, giả thuyết và kết luận.
 - Nếu không tái hiện được, ghi rõ điều kiện đã thử và bằng chứng còn thiếu.
 - Không vô tình che lỗi bằng catch rộng, timeout tăng tùy tiện hoặc fallback làm sai dữ liệu.
+- Khi dùng template `bug-investigation.md`, phải ghi kết quả điều tra thành file `.md`; tin nhắn chat chỉ tóm tắt ngắn gọn root cause, cách fix và đường dẫn file báo cáo.
 
 ## Điều kiện hoàn tất
 - Có nguyên nhân gốc được hỗ trợ bằng bằng chứng hoặc ghi rõ chưa xác định được.
