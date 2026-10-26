@@ -24,6 +24,7 @@ description: "Review thay đổi code dựa trên diff và ngữ cảnh xung qua
 - Phân biệt bug chắc chắn với câu hỏi cần xác minh.
 - Không khẳng định review đầy đủ nếu chỉ xem một phần file hoặc không thể chạy test.
 - Báo cáo review theo template phải được xuất thành file Markdown (`.md`); chat chỉ tóm tắt ngắn gọn kết luận, số lượng findings, blocker chính và đường dẫn file.
+- Giọng điệu review tuân thủ *Clear but not cold* và *Helpful but not overly-prescriptive*: nêu rõ nguyên nhân kèm bằng chứng, đề xuất hướng xử lý và phân tích trade-off thay vì áp đặt hay ra lệnh.
 
 ## Điều kiện hoàn tất
 - Findings được phân loại rõ; blocker/high severity được xử lý hoặc được chấp nhận có chủ đích trước merge.
