@@ -1,6 +1,6 @@
 # Quy trình phát triển phần mềm
 
-Áp dụng quy trình tương xứng với rủi ro: thay đổi nhỏ cần kiểm tra gọn; thay đổi rủi ro cao hoặc ảnh hưởng nhiều thành phần cần yêu cầu, thiết kế, test, kế hoạch triển khai và bàn giao rõ ràng.
+Áp dụng quy trình tương xứng với rủi ro và tuân thủ các nguyên tắc cốt lõi trong `rules/engineering-philosophy.md`: thực tiễn đánh bại thuần khiết (*Practicality beats purity*), giải pháp triệt để không nửa vời (*Half measures are as bad as nothing at all*), thiết kế đối phó thất bại (*Design for failure*), và kiểm soát phình mã nguồn (*Anything added dilutes everything else*).
 
 ## Giai đoạn 1 — Hiểu vấn đề
 
@@ -12,9 +12,10 @@
 ## Giai đoạn 2 — Lập kế hoạch
 
 - Kiểm tra module, contract, luồng dữ liệu, test, migration và thành phần tiêu thụ bị ảnh hưởng.
-- Chọn cách triển khai nhỏ nhất nhưng nhất quán.
+- Chọn cách triển khai nhỏ nhất nhưng nhất quán; ưu tiên giải pháp thực tế, tái sử dụng pattern có sẵn của repo (*Practicality beats purity*).
+- Tránh over-engineering: không thêm abstraction/helper/wrapper khi chưa có nhu cầu thực tế (*Anything added dilutes everything else*).
 - Chia công việc rủi ro cao thành các bước dễ review; liệt kê file/module dự kiến thay đổi.
-- Xem xét tương thích, quyền truy cập, luồng lỗi, khả năng quan sát, rollback và tác động vận hành.
+- Thiết kế đối phó thất bại (*Design for failure*): xem xét tương thích, quyền truy cập, luồng lỗi, khả năng quan sát, rollback và tác động vận hành.
 
 ## Giai đoạn 3 — Thiết kế khi cần
 
@@ -26,14 +27,16 @@
 ## Giai đoạn 4 — Triển khai
 
 - Tuân theo pattern hiện có của project, trừ khi chính pattern đó là nguyên nhân đã xác nhận.
-- Giữ phạm vi thay đổi rõ ràng; tránh refactor không liên quan.
+- Giữ phạm vi thay đổi rõ ràng; tránh refactor không liên quan (Minimal Diff).
+- Clean cutover: di chuyển toàn bộ callers, dọn sạch code chết/shim tạm bợ, không để lại `TODO: implement` dở dang (*Half measures are as bad as nothing at all*).
 - Bổ sung/cập nhật test cùng với thay đổi hành vi.
 - Với thay đổi dữ liệu, xác định migration, tương thích, backfill và rollback khi phù hợp.
 
 ## Giai đoạn 5 — Kiểm chứng
 
 - Chạy các kiểm tra tự động phù hợp nhất: unit, integration, e2e, lint, type check, build, kiểm tra migration hoặc kịch bản thủ công có thể tái hiện.
-- Kiểm tra tiêu chí chấp nhận và các đường lỗi/edge case quan trọng, không chỉ happy path.
+- Kiểm tra tiêu chí chấp nhận và các đường lỗi/edge case quan trọng, không chỉ happy path (*Design for failure*).
+- Hiệu năng là tính năng bắt buộc: tính năng chỉ hoàn tất khi chạy nhanh, không rò rỉ bộ nhớ hoặc tạo N+1 query (*It’s not fully shipped until it’s fast*).
 - Báo rõ lệnh/kết quả, kiểm tra bị bỏ qua, giả định và rủi ro còn lại.
 
 ## Giai đoạn 6 — Review và phát hành

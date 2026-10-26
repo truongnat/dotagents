@@ -56,6 +56,7 @@ Mục tiêu là biến memory thành **knowledge base có thể tìm kiếm, ki�
 6. **Không lưu bí mật:** không đưa token, mật khẩu, private key, dữ liệu cá nhân hoặc log chứa thông tin nhạy cảm vào memory.
 7. **Ngôn ngữ nhất quán:** nội dung diễn giải mặc định bằng tiếng Việt; định danh kỹ thuật và metadata có cấu trúc giữ nguyên tiếng Anh. Quy tắc chi tiết nằm trong `.agents/rules/language.md`.
 8. **Phân định đầu ra rõ ràng:** Chat chỉ báo cáo tóm tắt ngắn gọn (Executive Summary); toàn bộ báo cáo chi tiết theo template phải xuất thành file Markdown (`.md`) lưu tại `~/.agents/outputs/<project>/reports/` theo quy chuẩn `rules/deliverables-and-reporting.md`, không xả file rác vào repository.
+9. **Triết lý kỹ thuật chuẩn (The Zen of GitHub):** định hình hành vi và chất lượng code dựa trên 14 nguyên tắc cốt lõi: thực tiễn đánh bại thuần khiết (*Practicality beats purity*), kiểm soát phình tính năng (*Anything added dilutes everything else*), không giải pháp nửa vời (*Half measures are as bad as nothing at all*), và thiết kế chịu lỗi (*Design for failure*). Chi tiết tại `.agents/rules/engineering-philosophy.md`.
 
 ## 2. Cấu trúc
 

@@ -1,6 +1,6 @@
 # Quy trình làm việc của Agent
 
-Trước khi tạo hoặc cập nhật tài liệu/memory, phải áp dụng `rules/language.md` trong cùng bộ `.agents` (dùng đường dẫn tương đối từ file hướng dẫn này).
+Trước khi thực hiện công việc, Agent phải tuân thủ triết lý kỹ thuật trong `rules/engineering-philosophy.md` và áp dụng `rules/language.md` trong cùng bộ `.agents` (dùng đường dẫn tương đối từ file hướng dẫn này).
 
 ## 0. Chọn skill phù hợp, không nạp cả bộ
 
@@ -40,8 +40,9 @@ Nếu không có script, dùng `rg -n -i "term" .agents/memory "$HOME/.agents/me
 ## 2. Trong quá trình thực hiện
 
 - Xác nhận yêu cầu liên quan và tiêu chí chấp nhận trước khi thay đổi lớn.
-- Kiểm tra kiến trúc và pattern hiện có trước khi thêm abstraction hoặc dependency.
-- Ưu tiên thay đổi nhỏ nhất nhưng giải quyết trọn vẹn nguyên nhân đã xác nhận.
+- Kiểm tra kiến trúc và pattern hiện có trước khi thêm abstraction hoặc dependency; thực tiễn đánh bại thuần khiết (*Practicality beats purity*).
+- Tránh over-engineering: bất kỳ thứ gì thêm vào đều làm mờ nhạt đi phần còn lại (*Anything added dilutes everything else*); giữ diff ở mức tối thiểu.
+- Giải quyết triệt để, không nửa vời (*Half measures are as bad as nothing at all*): sửa tận gốc nguyên nhân, dọn sạch callers khi đổi API.
 - Không trình bày giả định như sự thật; ghi rõ điều chưa chắc chắn và xác minh khi có thể.
 - Không sao chép máy móc giải pháp từ memory. Kiểm tra tính phù hợp và phiên bản liên quan.
 - Không ghi secret, credential, private key, dữ liệu cá nhân hoặc log nhạy cảm chưa được che thông tin vào memory.

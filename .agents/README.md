@@ -3,7 +3,7 @@
 Thư mục này chứa workflow, quy tắc, điểm mở rộng, script, template và memory lâu dài của repository.
 
 - `AGENTS.md`: hợp đồng làm việc cơ bản cho agent.
-- `rules/`: quy chuẩn phát triển phần mềm, chính sách memory, an toàn bảo mật, ngôn ngữ và chuẩn xuất bản báo cáo (`deliverables-and-reporting.md`); tùy chỉnh `project.md` cho từng repository.
+- `rules/`: triết lý kỹ thuật (The Zen of GitHub tại `engineering-philosophy.md`), quy chuẩn phát triển phần mềm, chính sách memory, an toàn bảo mật, ngôn ngữ và chuẩn xuất bản báo cáo (`deliverables-and-reporting.md`); tùy chỉnh `project.md` cho từng repository.
 - `skills/`: năng lực theo từng loại tác vụ, được đăng ký với agent đang sử dụng.
 - `mcp/`: hướng dẫn cấu hình MCP và quyền truy cập.
 - `tools/`: công cụ hỗ trợ có hành vi xác định.
