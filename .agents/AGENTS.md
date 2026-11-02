@@ -1,84 +1,125 @@
-# Quy trình làm việc của Agent
+# Tiêu chuẩn phát triển toàn cục: Phương pháp luận SPARC (sparc-coder)
 
-Trước khi thực hiện công việc, Agent phải tuân thủ triết lý kỹ thuật trong `rules/engineering-philosophy.md` và áp dụng `rules/language.md` trong cùng bộ `.agents` (dùng đường dẫn tương đối từ file hướng dẫn này).
+Mọi agent và phiên làm việc mặc định tuân thủ **SPARC** (Specification, Pseudocode, Architecture, Refinement, Completion), triết lý kỹ thuật trong `rules/engineering-philosophy.md`, quy chuẩn ngôn ngữ trong `rules/language.md` và quy trình kiểm soát chất lượng dưới đây.
 
-## 0. Chọn skill phù hợp, không nạp cả bộ
+| Phase | Ý nghĩa |
+|-------|---------|
+| **S** | Mục tiêu, scope, AC, edge cases (`requirements.md` hoặc tóm tắt ngắn khi fix nhỏ) |
+| **P** | Phác thảo logic/branch trước code phức tạp |
+| **A** | Pattern repo, ranh giới kiến trúc, rủi ro (`context.md` khi cần) |
+| **R** | TDD-first, minimal diff, error handling |
+| **C** | Verify có evidence — PASS / FAIL / BLOCKED / NOT VERIFIED |
 
-- Đọc `.agents/skills/README.md` để phân loại task và chọn skill liên quan; đọc `SKILL.md` của skill đã chọn trước khi thực hiện quy trình đó.
-- Với task nhiều giai đoạn, có thể kết hợp nhiều skill theo đúng thứ tự trong bản đồ quy trình. Không cần kích hoạt mọi skill cho một thay đổi nhỏ.
-- Skill hướng dẫn cách thực hiện; template chuẩn hóa đầu ra; rule quy định yêu cầu bắt buộc. Không dùng template thay cho việc điều tra/ra quyết định.
-- Với mọi task kỹ thuật đáng kể, thực hiện bước tìm memory bên dưới trước khi đưa ra giải pháp.
+**Độ sâu (tự chọn, không in ra chat):** fix nhỏ → S/C inline; feature vừa → file gate rút gọn; feature lớn / nghiệp vụ mới → full gate + fleet `sdlc-*` (mục 10). Không hỏi user “chọn quy trình” nếu đã suy ra từ task. Độ sâu không miễn cổng phê duyệt ở mục 0.
 
-## 1. Trước khi sửa code: tìm memory trước
+**Nguồn tri thức (thứ tự):** yêu cầu + file attach → artifact SPARC trong repo → rule project → memory repo/project (script `scripts/search-memory.sh`, xem mục 1) → ai-memory (`memory_query` → `memory_read_page`) → tri thức kỹ thuật & codebase qua XERJ (`xerj_search` / `xerj_def` / `xerj_code_search`) → MCP domain khi cần ticket/MR → hỏi user.
 
-Với mọi bug, feature, refactor, migration, thay đổi kiến trúc hoặc tooling không tầm thường:
+---
 
-1. Tóm tắt vấn đề thành các từ khóa tìm kiếm: triệu chứng/lỗi, subsystem/file, nguyên nhân có thể có và hành vi mong muốn.
-2. Tìm **memory của project trước**, sau đó mới tìm memory global. Nếu lượt đầu ít kết quả, thử ít nhất hai cách diễn đạt, ví dụ chuỗi lỗi chính xác và tên subsystem/triệu chứng.
-3. Đọc toàn bộ entry phù hợp, không chỉ xem snippet. Ưu tiên entry có `status: active`, stack/version tương thích và ngày xác minh gần nhất.
-4. Đối chiếu hướng dẫn với branch, code, cấu hình, phiên bản dependency và test hiện tại. Memory là bằng chứng tham khảo, không phải chân lý tuyệt đối.
-5. Nếu không có kết quả phù hợp, tiếp tục điều tra bình thường. Không bịa kết quả hoặc tuyên bố đã tìm kiếm nếu chưa thực sự chạy tìm kiếm.
+## 0. Cổng thực thi — Todo Checklist & phê duyệt (bắt buộc)
 
-### Lệnh tìm kiếm
+Mọi task làm **thay đổi trạng thái** (code, config, file, dữ liệu, hệ ngoài) phải đi qua cổng này trước khi execute:
 
-Chạy từ bất kỳ thư mục nào bên trong repository:
+1. **Lập todo checklist** ngay sau phân tích yêu cầu, trước khi sửa bất cứ gì: mỗi mục = một hành động kiểm chứng được, theo thứ tự, ghi rõ in-scope / out-of-scope. Fix nhỏ: checklist 2–3 dòng.
+2. **Trình checklist và dừng chờ user approve.** Không bắt đầu thay đổi khi chưa được duyệt.
+3. User yêu cầu sửa → **cập nhật checklist → trình duyệt lại** phần thay đổi, rồi mới execute.
+4. Khi execute: tick từng mục theo **bằng chứng thực tế**; phát sinh blocker hoặc phải đổi scope ngoài checklist → dừng, xin duyệt bổ sung; không tự mở rộng phạm vi.
+5. Bàn giao: báo cáo trạng thái từng mục theo checklist (`PASS / FAIL / BLOCKED / NOT VERIFIED`) kèm lệnh đã chạy và chưa chạy.
+6. **Miễn cổng:** câu hỏi tra cứu, giải thích, đọc thông tin thuần túy không làm thay đổi trạng thái.
+7. Fleet `sdlc-*`: agent nền không tự dừng hỏi user; **parent** chịu trách nhiệm xin duyệt checklist và chỉ delegate phạm vi đã duyệt (kèm checklist vào brief).
+8. Cổng này là ủy quyền thường trực do user yêu cầu, không thuộc loại "quy trình phê duyệt thủ công vô lý" bị cấm trong `rules/engineering-philosophy.md`.
 
-```bash
-repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-search_script="$repo_root/.agents/scripts/search-memory.sh"
-if [[ ! -x "$search_script" ]]; then search_script="$HOME/.agents/scripts/search-memory.sh"; fi
+## 1. Tiếp nhận và phân tích yêu cầu (Requirement Analysis)
 
-# Tìm memory project trước, sau đó đến global.
-"$search_script" "refresh token loop"
+- Đọc kỹ yêu cầu, xác định mục tiêu, hành vi mong đợi và phạm vi thay đổi.
+- Kiểm tra specs, documents, business rules và code hiện tại.
+- Trace luồng nghiệp vụ end-to-end khi ảnh hưởng luồng; không chỉ một module.
+- Phân tích dependency, side effects, backward compatibility.
+- Xác định điểm mơ hồ, mâu thuẫn; ưu tiên tự xác minh từ dự án.
+- Không triển khai khi còn điểm chưa rõ ảnh hưởng kết quả.
+- **Tìm memory trước khi đưa ra giải pháp** (task kỹ thuật đáng kể): tóm tắt vấn đề thành từ khóa; chạy `scripts/search-memory.sh "<từ khóa>"` — **memory của project/repo trước, global sau**; nếu không có script, `rg -n -i "<term>" .agents/memory "$HOME/.agents/memory"` và loại `archive/` khỏi lượt đầu. Đọc toàn bộ entry phù hợp (ưu tiên `status: active`), đối chiếu với code/phiên bản hiện tại. Không bịa kết quả hoặc tuyên bố đã tìm kiếm nếu chưa chạy.
 
-# Chỉ tìm archive khi corpus hiện hành không có kết quả hữu ích.
-"$search_script" --archive "refresh token loop"
-```
+## 2. Xây dựng Requirement Checklist
 
-Nếu không có script, dùng `rg -n -i "term" .agents/memory "$HOME/.agents/memory"` và loại `archive/` khỏi lượt tìm đầu tiên.
+- File `requirements.md` khi feature/significant change (fix nhỏ: bullet trong reply đủ).
+- Checkbox REQ-xx, in/out scope, AC kiểm chứng được.
+- Requirement checklist là **một phần của todo checklist trình duyệt tại mục 0**; user approve rồi mới chuyển sang kiến trúc/plan.
 
-## 2. Trong quá trình thực hiện
+## 3. Xây dựng Context Checklist
 
-- Xác nhận yêu cầu liên quan và tiêu chí chấp nhận trước khi thay đổi lớn.
-- Kiểm tra kiến trúc và pattern hiện có trước khi thêm abstraction hoặc dependency; thực tiễn đánh bại thuần khiết (*Practicality beats purity*).
-- Tránh over-engineering: bất kỳ thứ gì thêm vào đều làm mờ nhạt đi phần còn lại (*Anything added dilutes everything else*); giữ diff ở mức tối thiểu.
-- Giải quyết triệt để, không nửa vời (*Half measures are as bad as nothing at all*): sửa tận gốc nguyên nhân, dọn sạch callers khi đổi API.
-- Không trình bày giả định như sự thật; ghi rõ điều chưa chắc chắn và xác minh khi có thể.
-- Không sao chép máy móc giải pháp từ memory. Kiểm tra tính phù hợp và phiên bản liên quan.
-- Không ghi secret, credential, private key, dữ liệu cá nhân hoặc log nhạy cảm chưa được che thông tin vào memory.
+- Trace code, data flow, pattern hiện có; file `context.md` khi subsystem mới hoặc rủi ro cao.
+- Tái sử dụng pattern repo; quyết định kỹ thuật ghi ngắn gọn.
+- Approved trước plan/implement khi dùng full gate.
+- Tra cứu codebase lớn hoặc định nghĩa AST: ưu tiên `xerj_def` / `xerj_search` để lấy chính xác `file:line` và symbol thay vì dùng `grep` thô làm tràn context.
 
-## 3. Trước khi hoàn thành: kiểm chứng và đúc kết
+## 4. Definition of Done (DoD)
 
-1. Chạy test, type check, lint, build hoặc kiểm tra thủ công có thể tái hiện phù hợp nhất. Báo rõ đã chạy và chưa chạy những gì.
-2. Xem lại diff; bảo đảm không có thay đổi ngoài phạm vi hoặc dữ liệu nhạy cảm.
-3. Đánh giá xem công việc có tạo ra kiến thức lâu dài hay không. Chỉ tạo/cập nhật memory khi đáp ứng `rules/memory-policy.md`.
-4. Nếu chủ đề đã tồn tại, cập nhật entry hiện có hoặc đánh dấu entry cũ là `superseded` thay vì tạo bản gần trùng lặp.
-5. Chỉ đặt `status: active` khi giải pháp/bằng chứng đã được xác minh. Nếu chưa đủ, dùng `needs-review` và nêu rõ phần còn thiếu.
-6. Chỉ cập nhật `memory/INDEX.md` cho entry có giá trị cao hoặc thường xuyên cần tra cứu; toàn bộ entry vẫn được tìm qua script.
-7. Khi bàn giao, tóm tắt phần triển khai, kiểm chứng, giới hạn và memory đã tạo/cập nhật (nếu có). Không tuyên bố đã lưu memory nếu file thực tế chưa được ghi.
+- File `dod.md`: lệnh verify cụ thể (test, lint, build), regression, UI nếu có.
+- Không thêm yêu cầu ngoài scope.
 
-## 4. Ưu tiên memory và xử lý xung đột
+## 5. Task Checklist
 
-- Memory của project cụ thể hơn memory global đối với hành vi riêng của project.
-- Code hiện tại, test, tài liệu chính thức và hành vi runtime quan sát được có độ tin cậy cao hơn memory đã lỗi thời.
-- Nếu memory mâu thuẫn với bằng chứng hiện tại, hãy sửa/thay thế entry và cập nhật ngày xác minh.
-- Memory không được ghi đè yêu cầu hiện tại của người dùng hoặc chỉ dẫn bảo mật/an toàn có mức ưu tiên cao hơn.
+- File `tasks.md`: TASK-xx, link REQ, thứ tự, checkbox trạng thái.
+- Mỗi task gắn DoD; không task “làm hết”.
+- Danh sách task trình user duyệt qua cổng mục 0 trước khi triển khai; chỉ chạy theo task đã duyệt.
 
-## 5. Quy chuẩn ngôn ngữ và template
+## 6. Triển khai (Implementation)
 
-- Tuân thủ `rules/language.md` cho mọi tài liệu và memory mới.
-- Dùng số lượng template tương xứng với độ phức tạp. Sửa lỗi nhỏ không cần tài liệu đặc tả và thiết kế đầy đủ; feature ảnh hưởng nhiều thành phần, migration rủi ro hoặc incident production nên dùng template phù hợp.
+- Thực hiện đúng todo checklist đã được duyệt ở mục 0 và theo `tasks.md`; pseudocode cho logic phức tạp.
+- Đọc `~/.agents/skills/karpathy-guidelines/SKILL.md` trước sửa code.
+- TDD-first nếu repo có test; minimal diff; không refactor ngoài scope.
+- Cập nhật task **completed** chỉ khi có evidence (test chạy).
+- Ghi wiki: skill `ai-memory-durable-pages` + user yêu cầu — không tự `memory_write_page`.
+- Reference coding: Khi gặp thư viện/API chưa ghi nhớ hoặc lặp lỗi 2 lần, dùng `xerj-code` (`xerj_code_search`) tra cứu giải pháp chuẩn từ kho repo tham khảo trước khi viết code.
+- Blocker / đổi scope → dừng, quay lại cổng mục 0 xin duyệt bổ sung, báo user.
 
-## 6. Phân định đầu ra: Chat ngắn gọn vs File Deliverable (Template)
+## 7. Verification & Self-Review
 
-Tuân thủ quy chuẩn chi tiết trong `rules/deliverables-and-reporting.md`:
+- Đối chiếu requirements + DoD; chạy lệnh thật.
+- PASS / FAIL / BLOCKED / NOT VERIFIED — không PASS khi chưa verify.
+- Tóm tắt: changed, verified, risks (bullet).
 
-- **Lưu trữ chuẩn (không xả file rác vào repo):**
-  - Tài liệu dự án dài hạn (ADR, spec, memory): Lưu trong repo (`docs/adr/`, `docs/specs/`, `.agents/memory/entries/`).
-  - Báo cáo review, audit, test, bug investigation, handoff: Mặc định lưu ngoài worktree tại `~/.agents/outputs/<project-name>/reports/YYYY-MM-DD-<loại>-<chủ-đề>-<rev>.md` (hoặc thư mục riêng do repository quy định trong `rules/project.md`). Tuyệt đối không tạo file rải rác ở root project (`./report.md`, `./review.md`).
-- **Template bắt buộc phải ghi ra file:** Mọi nội dung chi tiết theo template bắt buộc phải ghi thành file Markdown (`.md`). Tuyệt đối không dùng khung template để in một bản báo cáo dài lòng thòng trực tiếp vào tin nhắn chat.
-- **Báo cáo trong Chat chỉ tóm tắt ngắn gọn (Executive Summary):**
-  1. Tóm tắt kết luận cốt lõi trong 3–5 bullet points (trạng thái `PASS / FAIL / BLOCKED`).
-  2. Điểm tin các blocker, rủi ro hoặc findings quan trọng nhất (kèm mã định danh `F-xx`).
-  3. Cung cấp **đường dẫn đầy đủ** đến file deliverable (`.md`) vừa ghi để người dùng tra cứu chi tiết.
-  4. Không copy/paste nguyên văn toàn bộ nội dung file deliverable hoặc log kiểm thử dài vào cửa sổ chat.
+## 8. Commit & Delivery
+
+- Không commit/push/MR trừ khi user yêu cầu.
+- Commit message theo convention repo.
+
+## 9. Quy tắc tối ưu
+
+- Fix nhỏ: checklist rút gọn 2–3 dòng theo mục 0, vẫn cần user duyệt, vẫn verify.
+- Feature lớn: full gate + approval.
+- Không hỏi lại thông tin đã có; không tài liệu dài trừu tượng.
+- Không đọc cả repo; mở rộng theo dependency.
+- Không scope creep; ưu tiên đúng & bảo trì hơn tốc độ.
+
+---
+
+## 10. Fleet, skills & MCP (khi delegate hoặc task lớn)
+
+| Vai trò | Agent `~/.agents/agents/…` | Output |
+|---------|------------------------------|--------|
+| Spec | `sdlc-requirements-analyst` | `requirements.md` |
+| Context | `sdlc-context-architect` | `context.md` |
+| Plan | `sdlc-planner` | `tasks.md`, `dod.md` |
+| Code | `sdlc-implementer` | code, tests |
+| Verify | `sdlc-verifier` | vs `dod.md` |
+| Review / ship / debug / security | `sdlc-code-reviewer`, `sdlc-ship-readiness`, `sdlc-debugger`, `sdlc-security-auditor` | theo `AGENT.md` |
+
+Playbook: `~/.agents/agents/_shared/SKILLS-MCP.md`. Meta-skill: `using-agent-skills`. Implement: `test-driven-development` + `karpathy-guidelines`. MCP: memory/ticket đọc trước; verify = lệnh local/CI, không thay bằng MCP.
+
+**Chọn skill:** đọc `skills/README.md` để phân loại task và chọn skill liên quan; chỉ nạp `SKILL.md` được chọn, không nạp cả bộ skill. Skill hướng dẫn cách thực hiện; template chuẩn hóa đầu ra; rule quy định yêu cầu bắt buộc.
+
+---
+
+## 11. Báo cáo và Review — File Deliverable
+
+- Tuân thủ quy chuẩn chi tiết tại `rules/deliverables-and-reporting.md`. Mọi yêu cầu review, audit, phân tích hoặc tổng hợp có đầu ra là báo cáo **phải xuất thành file**, kể cả khi không có finding. Trả lời chat đơn thuần không thay thế deliverable. Câu hỏi nhanh và trao đổi thông thường không cần tạo file.
+- Mặc định dùng Markdown (`.md`); dùng định dạng khác khi user yêu cầu. Ưu tiên thư mục báo cáo đã có convention; nếu chưa có, lưu ngoài worktree tại `~/.agents/outputs/<project>/reports/YYYY-MM-DD-<topic>-<revision>.md`. Dùng tên mô tả rõ nội dung, không ghi đè báo cáo khác phạm vi/revision.
+- **Bố cục chuyên nghiệp, dễ scan:** một tiêu đề rõ ràng; metadata ngắn (ngày, project, đối tượng review, branch/base/head khi có); kết luận và quyết định ở đầu; phạm vi/nguồn; findings; verification; giới hạn/rủi ro còn lại; hành động đề xuất. Chỉ giữ các mục phù hợp, không để heading rỗng.
+- Dùng heading phân cấp nhất quán, bảng cho dữ liệu cần đối chiếu và bullet ngắn cho diễn giải. Code/lệnh/log đặt trong fenced block có language. Trình bày gọn, có khoảng trắng; không dùng emoji trang trí, đoạn văn quá dài hoặc lặp cùng nội dung ở nhiều bảng/mục.
+- **Finding phải truy vết được:** mã `F-01`, severity/priority, tiêu đề nêu tác động, đường dẫn đầy đủ tính từ root repo + số dòng, điều kiện tái hiện, expected/actual, bằng chứng và đề xuất xử lý. Không rút gọn chỉ còn basename hoặc `.../file`. Phân biệt lỗi do thay đổi đang review, lỗi có sẵn và điểm chưa đủ bằng chứng.
+- **Bằng chứng nghiệp vụ:** dẫn tài liệu gốc bằng đường dẫn + dòng hoặc workbook/sheet/cell; tách yêu cầu đã xác nhận với suy luận và yêu cầu cần BA/khách hàng xác nhận. Việc sửa tài liệu trong cùng PR không tự chứng minh thay đổi nghiệp vụ đã được phê duyệt.
+- **Verification:** ghi lệnh/scenario thực sự đã chạy, revision/môi trường, kết quả `PASS / FAIL / BLOCKED / NOT VERIFIED` và giới hạn. Phân biệt unit test, smoke với dependency giả lập, API/DB thật và UI end-to-end; không ghi proposed check thành kết quả đã chạy. Log dài giữ ở artifact và dẫn link, không dump vào thân báo cáo.
+- **Khi dùng subagent:** parent truyền rõ thư mục output, file riêng cho từng agent và format/evidence contract này. Mỗi agent trả đường dẫn file đã ghi; parent đối chứng, loại trùng và xuất một báo cáo tổng hợp cuối cùng, không chỉ nối nguyên các báo cáo con. Agent nền không tự dừng để hỏi user về hình thức báo cáo.
+- **Trước bàn giao:** mở lại file đã xuất; kiểm tra tiêu đề, bảng, fenced block, đường dẫn/link, kết luận và số liệu khớp evidence; bỏ placeholder và thông tin nhạy cảm. Với PDF/Office/HTML, kiểm tra bản render khi có công cụ; không tuyên bố đã kiểm tra trực quan nếu chưa render.
+- **Chat bàn giao:** kết luận ngắn, findings/blocker chính và link mở file kèm đường dẫn đầy đủ. Không dán lại toàn bộ nội dung báo cáo vào chat. Quy định upload của từng project vẫn áp dụng; tạo báo cáo local không đồng nghĩa được phép upload hoặc đăng comment.
