@@ -118,11 +118,12 @@ Nếu công cụ đang dùng không đọc `AGENTS.md`, hãy dùng file instruct
 
 ## 4. Skills và template phối hợp với nhau
 
-Bộ khung có các skill theo vòng đời: khám phá yêu cầu, thiết kế giải pháp, implement, điều tra bug, kiểm thử, code review, security review, release/deployment, incident response, refactor, memory curation và handoff/retrospective. Xem `.agents/skills/README.md` để chọn skill theo task.
+Bộ khung có các skill theo vòng đời: khám phá yêu cầu, thiết kế giải pháp, implement, điều tra bug, kiểm thử, code review, security review, release/deployment, incident response, refactor, memory curation, tự học/đúc kết kỹ năng (`self-learning-loop`) và handoff/retrospective. Xem `.agents/skills/README.md` để chọn skill theo task.
 
 - **Skill** hướng dẫn quy trình hành động, trigger và tiêu chí hoàn tất.
 - **Template** định dạng tài liệu/đầu ra khi thực sự cần.
 - **Rule** nêu ràng buộc cần áp dụng xuyên suốt.
+- **Tự học (Self-learning loop):** sau mỗi lượt gặp lỗi sửa sai hoặc giải quyết bài toán mới, agent tự động trích xuất bài học, kiểm tra trùng lặp và tạo draft skill qua bộ script `skill-distiller.py` và `promote-skill.py`.
 
 Không nạp toàn bộ skill cùng lúc. Chọn skill phù hợp; task nhỏ dùng luồng rút gọn, task lớn/rủi ro cao đi qua các cổng kiểm chứng đầy đủ. Skills phải được agent hỗ trợ và cấu hình đúng thư mục mới tự động phát hiện; chỉ lưu file vào `.agents/skills/` chưa đảm bảo mọi công cụ đã nạp chúng.
 
@@ -134,7 +135,7 @@ Phân loại task
   → Đọc entry phù hợp và xác minh tính hiện hành
   → Điều tra / thiết kế / triển khai
   → Chạy kiểm chứng phù hợp
-  → Cập nhật hoặc tạo memory nếu có kiến thức tái sử dụng
+  → Cập nhật memory hoặc tự học đúc kết skill mới (self-learning-loop)
   → Review diff, kiểm tra trạng thái memory và bàn giao
 ```
 

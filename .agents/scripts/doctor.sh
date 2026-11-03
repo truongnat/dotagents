@@ -77,8 +77,10 @@ fi
 
 # 5. Chạy unit tests
 echo
-if python3 "$AGENTS_DIR/scripts/test-validate-memory.py" && python3 "$AGENTS_DIR/scripts/test-search-memory.py"; then
-  echo "  ✓ Unit tests passing (validate-memory, search-memory)"
+if python3 "$AGENTS_DIR/scripts/test-validate-memory.py" && \
+   python3 "$AGENTS_DIR/scripts/test-search-memory.py" && \
+   python3 "$AGENTS_DIR/scripts/test-skill-distiller.py" >/dev/null; then
+  echo "  ✓ Unit tests passing (validate-memory, search-memory, test-skill-distiller)"
 else
   echo "  ✗ Unit tests failed"
   failures=$((failures + 1))

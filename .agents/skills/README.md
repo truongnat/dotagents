@@ -21,6 +21,7 @@ Skill mô tả **cách thực hiện một loại công việc**; template mô t
 | Release/deploy/migration | `release-deployment` | `release-checklist.md` |
 | Sự cố đang ảnh hưởng dịch vụ | `incident-response` | `incident-postmortem.md` sau khi ổn định |
 | Tìm/cập nhật/đúc kết memory | `memory-curation` | `memory-entry.md`, `memory-evaluation.md` |
+| Tự học, đúc kết skill sau turn/task | `self-learning-loop` | `.agents/template/skill/SKILL.md` |
 | Bàn giao hoặc tổng kết | `handoff-retrospective` | `handoff.md`, `retrospective.md` |
 
 ## Chuỗi quy trình mẫu

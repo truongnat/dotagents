@@ -17,6 +17,11 @@ Bộ công cụ vận hành và kiểm tra tính toàn vẹn của dotagents fra
   - Hỗ trợ lọc theo metadata: `--type`, `--status`, `--confidence`, `--tag`.
   - Hỗ trợ cờ `--summary` để in danh sách thẻ tóm tắt nhanh.
 
-### 3. Khởi tạo & Cài đặt
+### 3. Tự học & Đúc kết Kỹ năng (Self-Learning Loop)
+- `skill-distiller.py` — Phân tích bài học, kiểm tra trùng lặp (Jaccard similarity) và sinh draft `SKILL.md` chuẩn hóa vào thư mục staging (`.agents/skills/.staging/`).
+- `promote-skill.py` — Kiểm tra tính đầy đủ, cú pháp và chuyển draft skill từ staging sang thư mục skills chính thức (project hoặc global).
+- `test-skill-distiller.py` — Bộ unit test tự động cho quá trình trích xuất, đối chiếu trùng lặp và promote skill.
+
+### 4. Khởi tạo & Cài đặt
 - `init-global.sh [--force] [target-dir]` — Khởi tạo cấu trúc dotagents toàn cục (Global Framework) cho người dùng vào `~/.agents/` (hoặc thư mục đích nếu chỉ định), an toàn không ghi đè trừ khi có `--force`.
 - `init-project.sh [--force] <target-dir>` — Khởi tạo cấu trúc `.agents/` và `AGENTS.md` sang repository đích một cách an toàn (mặc định không ghi đè các file tùy biến như `project.md` hay `AGENTS.md` trừ khi có cờ `--force`).

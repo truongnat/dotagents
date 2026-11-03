@@ -7,7 +7,7 @@ Thư mục này chứa workflow, quy tắc, điểm mở rộng, script, templat
 - `skills/`: năng lực theo từng loại tác vụ, được đăng ký với agent đang sử dụng.
 - `mcp/`: hướng dẫn cấu hình MCP và quyền truy cập.
 - `tools/`: công cụ hỗ trợ có hành vi xác định.
-- `scripts/`: script tự động hóa khởi tạo toàn cục (`init-global.sh`), dự án (`init-project.sh`), kiểm tra (`doctor.sh`) và tìm kiếm memory (`search-memory.sh`).
+- `scripts/`: script tự động hóa khởi tạo toàn cục (`init-global.sh`), dự án (`init-project.sh`), kiểm tra (`doctor.sh`), tìm kiếm memory (`search-memory.sh`), và bộ công cụ tự học đúc kết kỹ năng (`skill-distiller.py`, `promote-skill.py`).
 - `template/`: template Markdown có thể tái sử dụng cho các giai đoạn kỹ thuật.
 - `memory/`: knowledge base có thể tìm kiếm và quản lý bằng version control.
 - `outputs/`: lưu trữ báo cáo, artifacts và test results ngoài worktree theo chuẩn `~/.agents/outputs/<project>/`.
